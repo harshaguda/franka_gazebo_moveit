@@ -33,3 +33,31 @@ This moves the robot to a set goal pose.
 
 Future improvements
 - Get the goal from a topic.
+
+## Trouble shooting
+Replace 
+```xml
+<xacro:if value="${gazebo and hand}">
+  <xacro:configure_joint joint_name="${arm_id}_finger_joint1" initial_position="0.0" />
+</xacro:if>
+```
+with 
+
+```xml
+<xacro:if value="${(gazebo or use_fake_hardware) and hand}">
+  <xacro:configure_joint joint_name="${arm_id}_finger_joint1" initial_position="0.0" />
+</xacro:if>
+```
+
+If you get base link error change this line as following or similar
+```shell
+Error: Virtual joint does not attach to a link on the robot (link 'base' is not known)
+```
+
+```xml
+<virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base"/>
+```
+to
+```xml
+<virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="${prefix}link0"/>
+```
